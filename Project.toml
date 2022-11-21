@@ -1,0 +1,13 @@
+name = "MaximumEntropyMomentClosures"
+uuid = "2abced8b-c1f8-4749-8ec9-beabb40c04e0"
+authors = ["roman-schaerer <r.p.s@posteo.ch> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.8"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
