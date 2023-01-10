@@ -1,0 +1,1 @@
+@enum RETURN_CODES Failure Success

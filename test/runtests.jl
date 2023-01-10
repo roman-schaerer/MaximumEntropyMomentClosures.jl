@@ -1,6 +1,6 @@
 using MaximumEntropyMomentClosures
-using Test
+using Test, SafeTestsets
 
-@testset "MaximumEntropyMomentClosures.jl" begin
-    # Write your tests here.
-end
+@time @safetestset "Quadrature" begin include("quadrature_test.jl") end
+@time @safetestset "Moments" begin include("moments_test.jl") end
+@time @safetestset "LagrangeMultipliers" begin include("lagrange_multipliers_test.jl") end
