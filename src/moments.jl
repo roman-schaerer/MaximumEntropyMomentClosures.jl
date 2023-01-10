@@ -1,5 +1,3 @@
-using Infiltrator
-
 function moments!(u::AbstractVector{T}, α::AbstractVector{T}, qr::Quadrature{T}) where T
     # u[i] = ith moment
     # α[i] = ith lagrange parameter

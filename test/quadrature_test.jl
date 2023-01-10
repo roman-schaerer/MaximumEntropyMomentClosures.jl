@@ -1,5 +1,10 @@
-using MaximumEntropyMomentClosures: init!, moments!, GaussLegendre, GaussHermite, change_basis!
+using MaximumEntropyMomentClosures: init!, 
+                                    moments!, 
+                                    GaussLegendre, 
+                                    GaussHermite, 
+                                    change_basis!
 using Statistics
+using Test
 
 function gauss_legendre_test(lower=0.5, upper=6.0, nq=16, m=2)
     gl = GaussLegendre{Float64}(lower=lower, upper=upper)

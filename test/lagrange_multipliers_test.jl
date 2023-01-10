@@ -1,5 +1,4 @@
-using MaximumEntropyMomentClosures: 
-                                    MaximumEntropyMomentClosures,
+using MaximumEntropyMomentClosures: MaximumEntropyMomentClosures,
                                     init!, 
                                     moments!, 
                                     hessian!,
@@ -9,7 +8,6 @@ using MaximumEntropyMomentClosures:
                                     NewtonParameters,
                                     lagrange_multipliers!
 using Test
-using BenchmarkTools
 using Random
 using LinearAlgebra
 

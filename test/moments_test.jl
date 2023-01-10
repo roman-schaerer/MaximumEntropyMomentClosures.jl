@@ -6,7 +6,6 @@ using MaximumEntropyMomentClosures: init!,
                                     raw_moments!, 
                                     central_normalized_moments!
 using Test
-using BenchmarkTools
 using Random
 using LinearAlgebra
 
