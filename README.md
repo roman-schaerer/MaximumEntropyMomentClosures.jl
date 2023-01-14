@@ -8,7 +8,7 @@ Methods to evaluate maximum entropy distributions
 [![Coverage](https://codecov.io/gh/roman-schaerer/MaximumEntropyMomentClosures.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/roman-schaerer/MaximumEntropyMomentClosures.jl)
 
 
-Warning: Currently, this package is at an early stage and considered experimental. The interfaces are not yet stable and are expected to change.
+**Warning**: Currently, this package is at an early stage and considered experimental. The interfaces are not yet stable and are expected to change.
 
 For now this package provides routines for the evaluation of one-dimensional maximum entropy distributions over an interval.
 
