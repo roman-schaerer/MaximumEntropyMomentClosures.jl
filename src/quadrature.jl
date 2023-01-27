@@ -1,6 +1,4 @@
-abstract type Quadrature{T} end
-
-@with_kw mutable struct GaussLegendre{T} <: Quadrature{T}
+@with_kw mutable struct GaussLegendre{T<:AbstractFloat} <: Quadrature{T}
     lower::T = -one(T) # lower bound of domain
     upper::T = one(T) # upper bound of domain
     x::Vector{T} = Float64[] # quadrature nodes
@@ -8,7 +6,7 @@ abstract type Quadrature{T} end
     ϕ::Array{T} = Float64[] # basis evaluations at quadrature nodes
 end
 
-@with_kw mutable struct GaussHermite{T} <: Quadrature{T}
+@with_kw mutable struct GaussHermite{T<:AbstractFloat} <: Quadrature{T}
     μ::T = zero(T)
     σ::T = one(T)
     x::Vector{T} = Float64[]
@@ -21,6 +19,17 @@ function init!(qr::Quadrature{T}; nq=16, m=0) where T
     quadrature_rule!(qr, nq)
     compute_monomials!(qr, m)
 end
+
+function GaussLegendre(ms::MomentSystem, nq::Int64)
+    return GaussLegendre{Float64}(ms::MomentSystem, nq::Int64)
+end
+
+function GaussLegendre{T}(ms::MomentSystem, nq::Int64) where {T<:AbstractFloat}
+    gl = GaussLegendre{T}(lower=ms.domain.lower, upper=ms.domain.upper)
+    init!(gl, nq=nq, m=ms.degree)
+    return gl
+end
+
 
 # m = degree of highest polynomial
 # nq = number of quadrature points

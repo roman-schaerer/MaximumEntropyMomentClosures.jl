@@ -3,19 +3,27 @@
 
 Store parameters of the Newton search algorithm
 """
-@with_kw mutable struct NewtonParameters{FloatType, IntType}
-    τ::FloatType = sqrt(eps(FloatType)) # τ > 0
-    ϵ::FloatType = eps(FloatType) # ϵ > 0
-    ϵγ::FloatType = 1e-2 # ϵγ > 0
-    ξ::FloatType = 1e-3 # ξ ∈ (0, 1/2)
-    χ::FloatType = 0.5 # χ ∈ (0, 1)
-    max_iter::IntType = 100
-    max_iter_line_search::IntType = 40
+
+function lagrange_multipliers!(α::AbstractVector{T}, u::AbstractVector{T}, 
+            memc::MaximumEntropyMomentClosure{MS, ME, MonomialBasisEvaluation}) where 
+            {MS, ME, T<:AbstractFloat}
+    result = lagrange_multipliers!(α, u, memc.me)
+    return result
 end
 
-@with_kw mutable struct NewtonStatistics{IntType}
-    num_iter_newton::IntType = 0
-    num_iter_line_search::IntType = 0
+function lagrange_multipliers!(α::AbstractVector{T}, u::AbstractVector{T}, 
+            memc::MaximumEntropyMomentClosure{MS, ME, AdaptiveBasisEvaluation{T}}) where 
+                              {MS, ME, T<:AbstractFloat}
+
+    result = lagrange_multipliers!(α, u, memc.le.tmat, 
+        memc.le.g, memc.le.hessian, memc.le.d, memc.me, memc.le.params)
+
+    u .= memc.le.tmat * u # transform to standard basis
+    α .= transpose(memc.le.tmat) \ α # transform to standard basis
+    memc.me.ϕ .= (memc.le.tmat) * memc.me.ϕ # transform to standard basis
+
+    memc.le.tmat .= Array{T,2}(I, memc.ms.degree+1, memc.ms.degree+1)
+    return result
 end
 
 
@@ -36,7 +44,7 @@ function lagrange_multipliers!(α::AbstractVector{T}, u::AbstractVector{T}, tmat
     for iter in 1:params.max_iter
         if change_basis!(α, u, tmat, h, qr) != Success
             println("error: change_basis failed") 
-            return (Failure, stats)
+            return true #(Failure, stats)
         end
         # evaluate gradient
         fill!(g, 0)
@@ -53,7 +61,7 @@ function lagrange_multipliers!(α::AbstractVector{T}, u::AbstractVector{T}, tmat
 
         # check stopping criteria
         if err < params.τ && exp(5*norm(tmat \ d, 1)) < 1 + params.ϵγ
-            return (Success, stats)
+            return true #(Success, stats)
         else
             line_search_iter = 0
             ζ = one(T)
@@ -70,13 +78,26 @@ function lagrange_multipliers!(α::AbstractVector{T}, u::AbstractVector{T}, tmat
                 ζ = params.χ * ζ
                 line_search_iter += 1
                 if line_search_iter > params.max_iter_line_search
-                    return (Failure, stats)
+                    return false#(Failure, stats)
                 end
             end
         end
     end
-    return (Failure, stats)
+    return false #(Failure, stats)
 end
+
+function change_basis!(αvec::AbstractVector{T}, uvec::AbstractVector{T}, 
+    memc::MaximumEntropyMomentClosure{MS, ME, LE}) where {T, MS, ME, LE}
+ 
+    if size(memc.le.hessian) != (memc.ms.degree+1, memc.ms.degree+1) ||
+       size(memc.le.tmat) != (memc.ms.degree+1, memc.ms.degree+1)
+        memc.le.hessian = Matrix{Float64}(I, memc.ms.degree+1, memc.ms.degree+1)
+        memc.le.tmat = Matrix{Float64}(I, memc.ms.degree+1, memc.ms.degree+1)
+    end
+    hessian!(memc.le.hessian, αvec, memc.me)
+    change_basis!(αvec, uvec, memc.le.tmat, memc.le.hessian, memc.me)
+end
+
 
 """
     change_basis!

@@ -1,3 +1,8 @@
+function moments!(u::AbstractVector{T}, α::AbstractVector{T}, 
+    memc::MaximumEntropyMomentClosure{MomentSystemType, MomentEvaluationType}) where {T, MomentSystemType, MomentEvaluationType}
+    moments!(u, α, memc.me)
+end
+
 function moments!(u::AbstractVector{T}, α::AbstractVector{T}, qr::Quadrature{T}) where T
     # u[i] = ith moment
     # α[i] = ith lagrange parameter

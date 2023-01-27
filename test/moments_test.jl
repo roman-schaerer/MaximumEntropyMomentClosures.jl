@@ -8,8 +8,25 @@ using MaximumEntropyMomentClosures: init!,
 using Test
 using Random
 using LinearAlgebra
+using Parameters
 
 Random.seed!(123)
+
+# AbstractType Domain
+
+# dom = Interval(lower=0, upper=1) # define the domain of definition
+# ms35 = MomentSystem(domain=dom, degree=4) # define the moment system
+# sol = FixedQuadrature(domain=dom, nq=64) # define the integration solver
+# me35 = MaximumEntropyClosure(ms35, sol) # define the maximum entropy closure
+
+# dom = RealLine()
+# ms10 = MomentSystem(domain=dom, degree=2)
+# sol = ExactIntegration(domain=dom, nq=64)
+# me10 = MaximumEntropyClosure(ms10, sol)
+
+# moments!(u, alpha, me35)
+# lagrange_multipliers!(alpha, u, me35)
+
 
 function basis_evaluation_test(;lower=-2.0,upper=3.0,nq=16,m=2)
     gl = GaussLegendre(lower=lower, upper=upper)
